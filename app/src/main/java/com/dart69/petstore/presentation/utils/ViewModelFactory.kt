@@ -10,11 +10,18 @@ import com.dart69.petstore.presentation.utils.selection.Tracker
 
 class ViewModelFactory(
     private val repository: FavouriteItemRepository<Long, Pet>,
-    private val selectionTracker: Tracker<Long, PetItem>
-): ViewModelProvider.Factory {
+    private val selectionTracker: Tracker<Long, PetItem>,
+    private val resourceManager: ResourceManager
+) : ViewModelProvider.Factory {
+
+    @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        val viewModel = when(modelClass) {
-            HomeViewModel::class.java -> HomeViewModel(repository, selectionTracker)
+        val viewModel = when (modelClass) {
+            HomeViewModel::class.java -> HomeViewModel(
+                repository,
+                selectionTracker,
+                resourceManager
+            )
             else -> error("Can't find actual viewModel.")
         }
         return viewModel as T

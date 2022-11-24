@@ -2,13 +2,16 @@ package com.dart69.petstore.presentation.home.recyclerview
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import com.dart69.petstore.R
 import com.dart69.petstore.databinding.PetItemBinding
 import com.dart69.petstore.model.extensions.use
 import com.dart69.petstore.model.item.ListItem
 import com.dart69.petstore.model.item.Pet
+import com.dart69.petstore.presentation.extensions.showPopupMenu
 import com.dart69.petstore.presentation.utils.ImageLoader
 import com.dart69.petstore.presentation.utils.SelectableAdapter
-
+import com.google.android.material.color.MaterialColors
 
 typealias PetItem = ListItem.Implementation<Long, Pet>
 typealias SelectablePetViewHolder = SelectableAdapter.SelectableViewHolder<Long, PetItem, PetItemBinding>
@@ -35,17 +38,26 @@ class PetAdapter(
         private val imageLoader: ImageLoader
     ) : SelectablePetViewHolder(binding) {
         override fun bind(item: PetItem) = binding.use {
-            val position = absoluteAdapterPosition
-            callbacks.highlight(binding.root, item)
+            val context = itemView.context
+            val backgroundColor = if (item.isSelected) {
+                ContextCompat.getColor(context, R.color.purple_200)
+            } else {
+                MaterialColors.getColor(itemView, R.attr.colorOnPrimary)
+            }
+            binding.root.setBackgroundColor(backgroundColor)
             textViewName.text = item.name
             textViewDetails.text = item.details
             checkBoxIsFavourite.isChecked = item.isFavourite
-            checkBoxIsFavourite.setOnClickListener { callbacks.onFavouriteClick(item, position) }
-            itemView.setOnClickListener { callbacks.onItemViewClick(item, position) }
-            itemView.setOnLongClickListener { callbacks.onItemViewLongClick(item, position) }
-            imageViewAvatar.setOnClickListener { callbacks.onAvatarClick(item, position) }
-            imageViewDelete.setOnClickListener { callbacks.onDeleteClick(item, position) }
-            imageViewMore.setOnClickListener { callbacks.onMoreClick(item, position, it) }
+            checkBoxIsFavourite.setOnClickListener { callbacks.onFavouriteClick(item) }
+            itemView.setOnClickListener { callbacks.onItemViewClick(item) }
+            itemView.setOnLongClickListener { callbacks.onItemViewLongClick(item) }
+            imageViewAvatar.setOnClickListener { callbacks.onAvatarClick(item) }
+            imageViewDelete.setOnClickListener { callbacks.onDeleteClick(item) }
+            imageViewMore.setOnClickListener {
+                it.showPopupMenu(R.menu.pet_item_popup_menu) { menuItemId ->
+                    callbacks.onPopupMenuItemsClick(item, menuItemId)
+                }
+            }
             imageLoader.loadInto(item.avatarUri, imageViewAvatar)
         }
     }

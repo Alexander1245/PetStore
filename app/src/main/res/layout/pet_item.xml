@@ -12,8 +12,6 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:shapeAppearanceOverlay="@style/RoundedImageView"
-        app:strokeColor="@color/black"
-        app:strokeWidth="@dimen/rounded_image_view_stroke"
         tools:src="@drawable/default_cat_sample" />
 
     <TextView
@@ -48,7 +46,8 @@
         android:src="@drawable/ic_delete"
         app:layout_constraintBottom_toBottomOf="@id/checkBoxIsFavourite"
         app:layout_constraintEnd_toStartOf="@+id/imageViewMore"
-        app:layout_constraintTop_toTopOf="@id/checkBoxIsFavourite" />
+        app:layout_constraintTop_toTopOf="@id/checkBoxIsFavourite"
+        android:contentDescription="@string/pet_avatar"/>
 
     <ImageView
         android:id="@+id/imageViewMore"

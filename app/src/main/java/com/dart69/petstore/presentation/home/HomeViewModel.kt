@@ -2,83 +2,93 @@ package com.dart69.petstore.presentation.home
 
 import androidx.annotation.IdRes
 import androidx.annotation.StringRes
-import androidx.lifecycle.*
+import androidx.lifecycle.viewModelScope
 import com.dart69.petstore.R
 import com.dart69.petstore.data.repository.FavouriteItemRepository
 import com.dart69.petstore.model.Progress
 import com.dart69.petstore.model.SelectionState
 import com.dart69.petstore.model.extensions.then
 import com.dart69.petstore.model.item.Pet
-import com.dart69.petstore.presentation.extensions.map
-import com.dart69.petstore.presentation.extensions.updateLastValue
+import com.dart69.petstore.presentation.home.recyclerview.ItemCallbacks
 import com.dart69.petstore.presentation.home.recyclerview.PetItem
-import com.dart69.petstore.presentation.utils.LiveEvent
-import com.dart69.petstore.presentation.utils.MutableLiveEvent
-import com.dart69.petstore.presentation.utils.eventValue
+import com.dart69.petstore.presentation.utils.BaseViewModel
+import com.dart69.petstore.presentation.utils.MessageSender
+import com.dart69.petstore.presentation.utils.ResourceManager
 import com.dart69.petstore.presentation.utils.selection.Tracker
 import kotlinx.coroutines.launch
 
-inline fun <T, reified R : MutableLiveData<T>> LiveData<T>.mutate(): R = this as R
-
 class HomeViewModel(
     private val repository: FavouriteItemRepository<Long, Pet>,
-    private val tracker: Tracker<Long, PetItem>
-) : ViewModel() {
-    private val rawPets = MutableLiveData<List<Pet>>()
-    val toasts: LiveEvent<Int> = MutableLiveEvent()
-    val progress: LiveData<Progress> = MutableLiveData()
-    val selection: LiveData<SelectionState> =
-        MediatorLiveData<SelectionState>().apply { value = SelectionState.EMPTY }
-    val actionText: LiveData<Int> = MutableLiveData()
-    val toolbarItemsVisibility: LiveData<Boolean> = MutableLiveData<Boolean>().apply { value = false }
-    val pets = rawPets.map { items ->
+    private val tracker: Tracker<Long, PetItem>,
+    private val resourceManager: ResourceManager
+) : BaseViewModel(), ItemCallbacks.PetCallbacks<Long, PetItem>, MessageSender {
+    private val rawPets = liveDataOf(emptyList<Pet>())
+    val progress = liveDataOf<Progress>(Progress.Completed)
+    val toolbarItemsVisibility = liveDataOf(false)
+    val actionText = liveDataOf(R.string.select_all)
+    val messages = liveEventOf(resourceManager.getString(R.string.loading_data))
+    val selection = rawPets.map(SelectionState.EMPTY) { items, currentState ->
+        currentState.copy(total = items.size)
+    }
+    val pets = rawPets.map(emptyList<PetItem>()) { items, _ ->
         items.map { PetItem(it, tracker.isSelected(it.id)) }
     }
 
     init {
-        val mutableSelection = selection.mutate<SelectionState, MediatorLiveData<SelectionState>>()
-        repository.addOnChangedListener { rawPets.postValue(it) }
-        mutableSelection.addSource(rawPets) { items ->
-            mutableSelection.updateLastValue { state -> state.copy(total = items.size) }
-        }
+        repository.addOnChangedListener { rawPets.updateValue(it) }
         tracker.addOnChangedListener {
             val selected = tracker.count()
-            val total = pets.value!!.size
+            val total = pets.value().size
             val hint = if (selected == total) R.string.unselect_all else R.string.select_all
-            actionText.mutate().value = hint
-            mutableSelection.updateLastValue { state -> state.copy(selected = selected) }
-            //TODO: Optimize computations, make it in pets instead of rawPets
-            rawPets.updateLastValue { items -> items.toMutableList() }
-            toolbarItemsVisibility.mutate().value = selected > 0
+            actionText.updateValue(hint)
+            toolbarItemsVisibility.updateValue(selected > 0)
+            selection.modifyValue { state -> state.copy(selected = selected) }
+            rawPets.modifyValue { items -> items.toMutableList() }
         }
-        invokeWithProgress { rawPets.postValue(repository.getAllSortedByFavourite()) }
+        invokeWithProgress { rawPets.updateValue(repository.getAllSortedByFavourite()) }
     }
 
-    fun onItemClick(item: PetItem) {
+    override fun onItemViewClick(item: PetItem) {
         if (tracker.hasSelection()) {
-            tracker.toggle(item.id)
+            toggle(item)
         } else {
-            showToast(R.string.item_view_clicked)
+            sendMessage(R.string.item_view_clicked)
         }
     }
 
-    fun onItemLongClick(item: PetItem) {
-        tracker.toggle(item.id)
+    override fun onItemViewLongClick(item: PetItem): Boolean {
+        toggle(item)
+        return true
     }
 
-    fun deleteSelected() {
-        invokeWithProgress {
-            repository.deleteByKeys(tracker.keys.toList())
-            tracker.clear()
-        }
+    override fun onAvatarClick(item: PetItem) {
+        sendMessage(R.string.not_yet_implemented)
     }
 
-    fun toggleFavouriteForSelected() {
-        invokeWithProgress {
-            val pets =
-                repository.findByKeys(tracker.keys.toList()).map { it.toggleFavourite() as Pet }
-            repository.updateMany(pets)
-        }
+    override fun onPopupMenuItemsClick(item: PetItem, @IdRes itemId: Int): Boolean = when (itemId) {
+        R.id.itemDelete -> onDeleteClick(item) then true
+        R.id.itemToggleFavourite -> onFavouriteClick(item) then true
+        R.id.itemToggleSelected -> toggle(item) then true
+        else -> false
+    }
+
+    override fun onDeleteClick(item: PetItem) = invokeWithProgress {
+        val key = item.id
+        repository.delete(item.map())
+        tracker.unselect(key)
+    }
+
+    override fun onFavouriteClick(item: PetItem) = invokeWithProgress {
+        val pet = item.map<Pet>()
+        repository.update(pet.toggleFavourite() as Pet)
+    }
+
+    override fun sendMessage(text: String) {
+        messages.updateEventValue(text)
+    }
+
+    override fun sendMessage(@StringRes textRes: Int) {
+        sendMessage(resourceManager.getString(textRes))
     }
 
     fun onToolbarMenuItemClick(@IdRes id: Int): Boolean = when (id) {
@@ -88,48 +98,38 @@ class HomeViewModel(
     }
 
     fun onActionClick() {
-        val isAllItemsSelected = tracker.count() == rawPets.value?.size
-        val action = if (isAllItemsSelected) tracker::unselectAll else tracker::selectAll
-        pets.value?.let { items ->
-            action(items.map { it.id })
-        }
+        val allItemsSelected = tracker.count() == rawPets.value().size
+        val action = if (allItemsSelected) tracker::unselectAll else tracker::selectAll
+        action(pets.value().map { it.id })
     }
 
-    fun onPopupActionsClick(item: PetItem, @IdRes id: Int): Boolean = when (id) {
-        R.id.itemDelete -> deletePet(item) then true
-        R.id.itemToggleFavourite -> togglePetFavourite(item.map()) then true
-        R.id.itemToggleSelected -> onItemLongClick(item) then true
-        else -> false
+    private fun toggle(item: PetItem) {
+        tracker.toggle(item.id)
     }
 
-    fun deletePet(pet: PetItem) {
-        val key = pet.id
-        invokeWithProgress {
-            repository.delete(pet.map())
-            tracker.unselect(key)
-        }
+    private fun deleteSelected() = invokeWithProgress {
+        repository.deleteByKeys(tracker.keys.toList())
+        tracker.clear()
     }
 
-    fun togglePetFavourite(pet: Pet) {
-        invokeWithProgress { repository.update(pet.toggleFavourite() as Pet) }
-    }
-
-    fun showToast(@StringRes messageId: Int) {
-        toasts.mutate().eventValue = messageId
+    private fun toggleFavouriteForSelected() = invokeWithProgress {
+        val selectedPets = repository.findByKeys(tracker.keys.toList())
+        val allFavourites = selectedPets.all { it.isFavourite }
+        val mapper = if(allFavourites) Pet::unmakeFavourite else Pet::makeFavourite
+        val newPets = selectedPets.map { pet -> mapper(pet) }
+        repository.updateMany(newPets)
     }
 
     private fun invokeWithProgress(
         block: suspend () -> Unit
     ) {
         viewModelScope.launch {
-            val mutableProgress = progress.mutate()
             try {
-                mutableProgress.value = Progress.Active
+                progress.updateValue(Progress.Active)
                 block()
-                mutableProgress.value = Progress.Completed
+                progress.updateValue(Progress.Completed)
             } catch (exception: Exception) {
-                mutableProgress.value = Progress.Error(exception)
-                showToast(R.string.cant_load_data)
+                progress.updateValue(Progress.Error(exception))
             }
         }
     }

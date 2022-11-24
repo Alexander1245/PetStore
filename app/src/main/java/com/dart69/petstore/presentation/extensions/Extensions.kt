@@ -1,35 +1,33 @@
 package com.dart69.petstore.presentation.extensions
 
 import android.content.Context
+import android.view.View
+import android.widget.PopupMenu
+import androidx.annotation.MenuRes
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModelProvider
-import com.dart69.petstore.presentation.utils.ViewModelFactory
 import com.dart69.petstore.presentation.app.App
+import com.dart69.petstore.presentation.utils.ImageLoader
+import com.dart69.petstore.presentation.utils.ViewModelFactory
 
 fun Context.provideFactory(): ViewModelProvider.Factory {
     val app = applicationContext as App
-    return ViewModelFactory(app.provideRepository(), app.provideSelectionTracker())
+    return ViewModelFactory(
+        app.provideRepository(),
+        app.provideSelectionTracker(),
+        app.provideResourceManager()
+    )
 }
 
 fun Fragment.provideFactory(): ViewModelProvider.Factory =
     requireContext().provideFactory()
 
-fun <T> MutableLiveData<T>.updateLastValue(updater: (T) -> T) {
-    value = updater(value ?: return)
+fun Fragment.provideImageLoader(): ImageLoader =
+    (requireContext().applicationContext as App).provideImageLoader()
+
+fun View.showPopupMenu(@MenuRes menuRes: Int, itemClickListener: (Int) -> Boolean) {
+    PopupMenu(context, this).apply {
+        inflate(menuRes)
+        setOnMenuItemClickListener { itemClickListener(it.itemId) }
+    }.show()
 }
-
-fun <T> MutableLiveData<T>.postLastValue(updater: (T) -> T) {
-    postValue(value ?: return)
-}
-
-fun <T, R> LiveData<T>.map(mapper: (T) -> R): LiveData<R> =
-    Transformations.map(this, mapper)
-
-fun <T, R> LiveData<T>.switchMap(mapper: (T) -> LiveData<R>): LiveData<R> =
-    Transformations.switchMap(this, mapper)
-
-fun <T> LiveData<T>.withInitial(initial: T): LiveData<T> =
-    (this as MutableLiveData<T>).apply { value = initial }

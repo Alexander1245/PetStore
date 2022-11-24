@@ -19,11 +19,3 @@ open class Event<out T>(private val content: T) {
         }
     }
 }
-
-var <T> MutableLiveEvent<T>.eventValue: T?
-    get() = value?.getContentIfNotHandled()
-    set(newValue) { newValue?.let { content -> value = Event(content) } }
-
-fun <T> MutableLiveEvent<T>.postEvent(content: T) {
-    postValue(Event(content))
-}

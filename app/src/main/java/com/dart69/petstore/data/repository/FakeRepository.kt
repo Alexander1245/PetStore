@@ -39,7 +39,7 @@ class FakeRepository(
         delay(500)
         data = (data + item).toMutableList()
         listener?.invoke(getAllSortedByFavourite())
-        1
+        item.id
     }
 
     override suspend fun getAllSortedByFavourite(): List<Pet> = withContext(dispatcher) {
@@ -50,7 +50,7 @@ class FakeRepository(
         val result = data.sortedByDescending { it.isFavourite }
         result
     }
-    
+
     override suspend fun getAll(): List<Pet> = withContext(dispatcher) {
         delay(1500)
         data
@@ -81,11 +81,11 @@ class FakeRepository(
         1
     }
 
-    override suspend fun updateMany(items: List<Pet>): Int {
+    override suspend fun updateMany(items: List<Pet>): Int = withContext(dispatcher){
         delay(555)
         val unique = items.toSet()
         unique.forEach { update(it) }
-        return unique.size
+        unique.size
     }
 
     override suspend fun delete(item: Pet): Int = withContext(dispatcher) {

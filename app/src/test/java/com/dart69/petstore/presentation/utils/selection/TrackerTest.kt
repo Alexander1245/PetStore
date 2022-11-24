@@ -5,7 +5,7 @@ import com.dart69.petstore.presentation.home.recyclerview.PetItem
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-internal class SelectionTrackerTest {
+internal class TrackerTest {
     private val tracker: Tracker<Long, PetItem>
         get() = Tracker.Implementation()
 
@@ -14,7 +14,7 @@ internal class SelectionTrackerTest {
         val selectionTracker = tracker
         val item = PetItem(Pet(1), false)
         val notSelectedItem = PetItem(Pet(2), false)
-        selectionTracker.toggle(item)
+        selectionTracker.toggle(item.id)
         assertEquals(true, selectionTracker.isSelected(item.id))
         assertEquals(false, selectionTracker.isSelected(notSelectedItem.id))
     }
@@ -30,7 +30,7 @@ internal class SelectionTrackerTest {
             val id = ((it + size) * 2).toLong()
             PetItem(Pet(id), false)
         }
-        selectionTracker.selectAll(items)
+        selectionTracker.selectAll(items.map { it.id })
         items.forEach { assertEquals(true, selectionTracker.isSelected(it.id)) }
         notSelectedItems.forEach { assertEquals(false, selectionTracker.isSelected(it.id)) }
     }
@@ -46,8 +46,8 @@ internal class SelectionTrackerTest {
             val id = ((it + size) * 2).toLong()
             PetItem(Pet(id), false)
         }
-        selectionTracker.selectAll(items)
-        selectionTracker.unselectAll(items)
+        selectionTracker.selectAll(items.map { it.id })
+        selectionTracker.unselectAll(items.map { it.id })
         items.forEach { assertEquals(false, selectionTracker.isSelected(it.id)) }
         notSelectedItems.forEach { assertEquals(false, selectionTracker.isSelected(it.id)) }
     }
