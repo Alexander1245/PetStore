@@ -17,10 +17,4 @@
         style="@style/SingleLineTextView"
         android:text="@string/wait_for_loading_data" />
 
-    <Button
-        android:id="@+id/buttonTryAgain"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/try_again"
-        android:textAllCaps="false"/>
 </LinearLayout>

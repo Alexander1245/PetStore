@@ -1,7 +1,7 @@
 package com.dart69.petstore.presentation.utils.selection
 
-import com.dart69.petstore.model.item.Pet
-import com.dart69.petstore.presentation.home.recyclerview.PetItem
+import com.dart69.petstore.home.model.Pet
+import com.dart69.petstore.home.presentation.recyclerview.PetItem
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

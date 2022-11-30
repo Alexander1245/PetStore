@@ -12,4 +12,5 @@
     <dimen name="default_padding">8dp</dimen>
     <dimen name="image_view_item_margin_end">8dp</dimen>
     <dimen name="avatar_elevation">2dp</dimen>
+    <dimen name="huge_text_size">34sp</dimen>
 </resources>

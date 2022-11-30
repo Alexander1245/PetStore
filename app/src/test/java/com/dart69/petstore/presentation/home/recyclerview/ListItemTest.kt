@@ -1,7 +1,7 @@
 package com.dart69.petstore.presentation.home.recyclerview
 
-import com.dart69.petstore.model.item.ListItem
-import com.dart69.petstore.model.item.Pet
+import com.dart69.petstore.shared.model.item.ListItem
+import com.dart69.petstore.home.model.Pet
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

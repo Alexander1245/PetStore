@@ -15,7 +15,7 @@
     <string name="delete">Delete</string>
     <string name="toggle_favourite">Toggle Favourite</string>
     <string name="move_down">Move Down</string>
-    <string name="wait_for_loading_data">Wait for loading data</string>
+    <string name="wait_for_loading_data">Wait for loading Pets…</string>
     <string name="try_again">Try Again</string>
     <string name="cant_load_data">Can\'t load data</string>
     <string name="not_yet_implemented">Not yet implemented</string>
@@ -23,5 +23,5 @@
     <string name="item_view_clicked">Item view clicked</string>
     <string name="group_actions">Group Actions</string>
     <string name="loading_data">Loading data…</string>
-    <string name="no_items_were_found">No items were found</string>
+    <string name="on_empty_pets_received">Oops…Can\'t find any pet</string>
 </resources>

@@ -7,11 +7,11 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.dart69.petstore.presentation.home.HomeFragment"
+        android:name="com.dart69.petstore.home.presentation.HomeFragment"
         android:label="HomeFragment" />
     <fragment
         android:id="@+id/testFragment"
-        android:name="com.dart69.petstore.presentation.home.TestFragment"
+        android:name="com.dart69.petstore.home.presentation.TestFragment"
         android:label="fragment_test"
         tools:layout="@layout/fragment_test" />
 </navigation>
