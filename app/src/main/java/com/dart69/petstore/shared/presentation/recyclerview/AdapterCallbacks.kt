@@ -1,6 +1,6 @@
 package com.dart69.petstore.shared.presentation.recyclerview
 
-interface ItemCallbacks {
+interface AdapterCallbacks {
     fun interface ItemViewClickListener<T> {
         fun onItemViewClick(item: T)
     }

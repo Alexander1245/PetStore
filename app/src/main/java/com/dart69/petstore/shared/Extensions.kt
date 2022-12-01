@@ -17,12 +17,9 @@ infix fun <T, R> T.then(right: R): R = right
 fun Context.provideFactory(): ViewModelProvider.Factory {
     val app = applicationContext as App
     return ViewModelFactory(
-        app.provideResourceManager(),
         app.provideAvailableDispatchers(),
         app.provideGetPetItemsUseCase(),
         app.provideGetSelectionDetailsUseCase(),
-        app.provideGetActionHintUseCase(),
-        app.provideGetGroupActionsVisibility(),
         app.provideDeleteSinglePetUseCase(),
         app.provideToggleSingleItemSelectedUseCase(),
         app.provideToggleAllPetsSelectedUseCase(),

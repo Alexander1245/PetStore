@@ -2,14 +2,14 @@ package com.dart69.petstore.shared.data.repository
 
 import com.dart69.petstore.shared.model.AvailableDispatchers
 import com.dart69.petstore.shared.model.Task
-import com.dart69.petstore.shared.model.item.Item
+import com.dart69.petstore.shared.model.item.UniqueItem
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.withContext
 
-class FakeRepository<K, T : Item.Unique<K>>(
+class FakeRepository<K, T : UniqueItem<K>>(
     initialData: List<T>,
     private val dispatchers: AvailableDispatchers
 ) : ItemRepository<K, T> {
@@ -36,7 +36,7 @@ class FakeRepository<K, T : Item.Unique<K>>(
         data
     }
 
-    override suspend fun updateItems(vararg items: T) {
+    override suspend fun update(items: List<T>) {
         val updateSingle: MutableList<T>.(T) -> Unit = lambda@{ item: T ->
             val index = indexOfFirst { it.id == item.id }
             this[if (index != -1) index else return@lambda] = item
@@ -50,7 +50,7 @@ class FakeRepository<K, T : Item.Unique<K>>(
         }
     }
 
-    override suspend fun deleteItems(vararg items: T) {
+    override suspend fun delete(items: List<T>) {
         mutableTask.newTask {
             delay(500)
             data -= items.toSet()

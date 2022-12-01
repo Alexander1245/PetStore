@@ -1,15 +1,15 @@
 package com.dart69.petstore.home.presentation
 
 import androidx.annotation.IdRes
-import com.dart69.petstore.shared.presentation.recyclerview.ItemCallbacks
+import com.dart69.petstore.shared.presentation.recyclerview.AdapterCallbacks
 
-interface PetAdapterCallbacks : ItemCallbacks.ItemViewClickListener<PetItem>,
-    ItemCallbacks.ItemViewLongClickListener<PetItem> {
-    fun onFavouriteClick(item: PetItem)
+interface PetAdapterCallbacks : AdapterCallbacks.ItemViewClickListener<SelectablePet>,
+    AdapterCallbacks.ItemViewLongClickListener<SelectablePet> {
+    fun onFavouriteClick(item: SelectablePet)
 
-    fun onAvatarClick(item: PetItem)
+    fun onAvatarClick(item: SelectablePet)
 
-    fun onPopupMenuItemsClick(item: PetItem, @IdRes itemId: Int): Boolean
+    fun onPopupMenuItemsClick(item: SelectablePet, @IdRes itemId: Int): Boolean
 
-    fun onDeleteClick(item: PetItem)
+    fun onDeleteClick(item: SelectablePet)
 }

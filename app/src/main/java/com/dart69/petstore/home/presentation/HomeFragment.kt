@@ -59,12 +59,12 @@ class HomeFragment : BaseFragment() {
             actionHintTextView.text =
                 getString(R.string.selected_items_hint, details.selected, details.total)
         }
-        viewModel.groupActionsVisible.collectWhenStarted { visibility ->
+        viewModel.groupActionsVisibility.collectWhenStarted { visibility ->
             toolbar.menu.forEach { it.isVisible = visibility == View.VISIBLE }
             actionGroup.visibility = visibility
         }
-        viewModel.actionHint.collectWhenStarted { hint ->
-            actionButton.text = hint
+        viewModel.actionHint.collectWhenStarted { hintRes ->
+            actionButton.setText(hintRes)
         }
     }
 }

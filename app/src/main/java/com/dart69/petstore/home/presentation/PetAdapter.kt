@@ -6,20 +6,21 @@ import androidx.core.content.ContextCompat
 import com.dart69.petstore.R
 import com.dart69.petstore.databinding.PetItemBinding
 import com.dart69.petstore.home.model.Pet
-import com.dart69.petstore.shared.model.item.ListItem
+import com.dart69.petstore.shared.model.item.SelectableWrapper
 import com.dart69.petstore.shared.presentation.ImageLoader
-import com.dart69.petstore.shared.presentation.SelectableAdapter
+import com.dart69.petstore.shared.presentation.ItemAdapter
+import com.dart69.petstore.shared.presentation.ItemViewHolder
 import com.dart69.petstore.shared.showPopupMenu
 import com.dart69.petstore.shared.use
 import com.google.android.material.color.MaterialColors
 
-typealias PetItem = ListItem.Implementation<Long, Pet>
-typealias SelectablePetViewHolder = SelectableAdapter.SelectableViewHolder<Long, PetItem, PetItemBinding>
+typealias SelectablePet = SelectableWrapper<Long, Pet>
+typealias PetItemViewHolder = ItemViewHolder<Long, SelectablePet, PetItemBinding>
 
 class PetAdapter(
     private val imageLoader: ImageLoader,
     private val callbacks: PetAdapterCallbacks
-) : SelectableAdapter<Long, PetItem, PetItemBinding, PetAdapter.PetViewHolder>() {
+) : ItemAdapter<Long, SelectablePet, PetItemBinding, PetAdapter.PetViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PetViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -28,7 +29,7 @@ class PetAdapter(
     }
 
     override fun onBindViewHolder(
-        holder: SelectableViewHolder<Long, PetItem, PetItemBinding>,
+        holder: PetItemViewHolder,
         position: Int
     ) = holder.bind(currentList[position])
 
@@ -36,8 +37,8 @@ class PetAdapter(
         private val binding: PetItemBinding,
         private val callbacks: PetAdapterCallbacks,
         private val imageLoader: ImageLoader
-    ) : SelectablePetViewHolder(binding) {
-        override fun bind(item: PetItem) = binding.use {
+    ) : PetItemViewHolder(binding) {
+        override fun bind(item: SelectablePet) = binding.use {
             val context = itemView.context
             val backgroundColor = if (item.isSelected) {
                 ContextCompat.getColor(context, R.color.purple_200)

@@ -1,7 +1,7 @@
 package com.dart69.petstore.shared.data.repository
 
 import com.dart69.petstore.shared.model.Task
-import com.dart69.petstore.shared.model.item.Item
+import com.dart69.petstore.shared.model.item.UniqueItem
 import kotlinx.coroutines.flow.StateFlow
 
 internal val imageSources = listOf(
@@ -17,22 +17,22 @@ internal val imageSources = listOf(
     "https://images.unsplash.com/photo-1604675223954-b1aabd668078?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxleHBsb3JlLWZlZWR8MTh8fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=500&q=60",
 )
 
-interface ItemRepository<K, T : Item.Unique<K>> {
+interface ItemRepository<K, T : UniqueItem<K>> {
     fun observe(): StateFlow<Task<List<T>>>
 
     suspend fun initialize()
 
     suspend fun getAll(): List<T>
 
-    suspend fun updateItems(vararg items: T)
+    suspend fun update(items: List<T>)
 
-    suspend fun deleteItems(vararg items: T)
+    suspend fun delete(items: List<T>)
 }
 
-suspend inline fun <K, reified T : Item.Unique<K>> ItemRepository<K, T>.updateMany(items: List<T>) {
-    updateItems(*items.toTypedArray())
+suspend fun <K, T : UniqueItem<K>> ItemRepository<K, T>.update(item: T) {
+    update(listOf(item))
 }
 
-suspend inline fun <K, reified T : Item.Unique<K>> ItemRepository<K, T>.deleteMany(items: List<T>) {
-    deleteItems(*items.toTypedArray())
+suspend fun <K, T : UniqueItem<K>> ItemRepository<K, T>.delete(item: T) {
+    delete(listOf(item))
 }

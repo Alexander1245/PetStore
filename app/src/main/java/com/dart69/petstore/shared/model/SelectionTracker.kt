@@ -1,17 +1,17 @@
 package com.dart69.petstore.shared.model
 
-import com.dart69.petstore.shared.model.item.Item
+import com.dart69.petstore.shared.model.item.UniqueItem
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-interface SelectionTracker<K, T : Item.Unique<K>> {
+interface SelectionTracker<K, T : UniqueItem<K>> {
     fun observe(): StateFlow<Set<K>>
 
-    fun select(vararg items: T)
+    fun select(items: List<T>)
 
-    fun unselect(vararg items: T)
+    fun unselect(items: List<T>)
 
     fun clear()
 
@@ -20,20 +20,7 @@ interface SelectionTracker<K, T : Item.Unique<K>> {
     fun count(): Int
 }
 
-inline fun <K, reified T : Item.Unique<K>> SelectionTracker<K, T>.toggle(item: T) {
-    val action = if (isSelected(item)) this::unselect else this::select
-    action(arrayOf(item))
-}
-
-inline fun <K, reified T : Item.Unique<K>> SelectionTracker<K, T>.selectMany(list: List<T>) {
-    select(*list.toTypedArray())
-}
-
-inline fun <K, reified T : Item.Unique<K>> SelectionTracker<K, T>.unselectMany(list: List<T>) {
-    unselect(*list.toTypedArray())
-}
-
-class ItemSelectionTracker<K, T : Item.Unique<K>>(
+class ItemSelectionTracker<K, T : UniqueItem<K>>(
     logger: Logger = Logger.None
 ) : SelectionTracker<K, T> {
     private val keys = MutableStateFlow(emptySet<K>())
@@ -44,7 +31,7 @@ class ItemSelectionTracker<K, T : Item.Unique<K>>(
 
     override fun observe(): StateFlow<Set<K>> = keys.asStateFlow()
 
-    override fun select(vararg items: T) {
+    override fun select(items: List<T>) {
         val selectSingle = lambda@{ item: T ->
             if (item.id in keys.value) return@lambda
             keys.update { keys -> keys + item.id }
@@ -52,7 +39,7 @@ class ItemSelectionTracker<K, T : Item.Unique<K>>(
         items.forEach(selectSingle)
     }
 
-    override fun unselect(vararg items: T) {
+    override fun unselect(items: List<T>) {
         val unselectSingle = lambda@{ item: T ->
             if (item.id !in keys.value) return@lambda
             keys.update { keys -> keys - item.id }
@@ -67,3 +54,14 @@ class ItemSelectionTracker<K, T : Item.Unique<K>>(
     override fun count(): Int = keys.value.size
 }
 
+fun <K, T : UniqueItem<K>> SelectionTracker<K, T>.toggle(item: T) {
+    if (isSelected(item)) unselect(item) else select(item)
+}
+
+fun <K, T : UniqueItem<K>> SelectionTracker<K, T>.select(item: T) {
+    select(listOf(item))
+}
+
+fun <K, T : UniqueItem<K>> SelectionTracker<K, T>.unselect(item: T) {
+    unselect(listOf(item))
+}

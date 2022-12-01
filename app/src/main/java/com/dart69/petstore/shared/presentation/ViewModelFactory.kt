@@ -7,18 +7,15 @@ import com.dart69.petstore.shared.model.AvailableDispatchers
 import com.dart69.petstore.home.presentation.HomeViewModel
 
 class ViewModelFactory(
-    private val resourceManager: ResourceManager,
     private val availableDispatchers: AvailableDispatchers,
-    private val getPetItemsUseCase: GetPetsUseCase,
+    private val getPetItemsUseCase: GetPetsSortedByFavouriteUseCase,
     private val getSelectionDetailsUseCase: GetSelectionDetailsUseCase,
-    private val getActionHintUseCase: GetActionHintUseCase,
-    private val showGroupActionsUseCase: GetGroupActionsVisibilityUseCase,
     private val deleteSinglePetUseCase: DeleteSinglePetUseCase,
     private val toggleSingleItemSelectedUseCase: ToggleSinglePetSelectedUseCase,
     private val toggleAllPetsSelectedUseCase: ToggleAllPetsSelectedUseCase,
     private val toggleSelectedItemsToFavouriteUseCase: ToggleSelectedItemsToFavouriteUseCase,
     private val deleteSelectedPetsUseCase: DeleteSelectedPetsUseCase,
-    private val toggleSinglePetFavourite: ToggleSinglePetFavourite,
+    private val toggleSinglePetFavourite: ToggleSinglePetFavouriteUseCase,
 ) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
@@ -28,15 +25,12 @@ class ViewModelFactory(
                 availableDispatchers,
                 getPetItemsUseCase,
                 getSelectionDetailsUseCase,
-                getActionHintUseCase,
-                showGroupActionsUseCase,
                 deleteSinglePetUseCase,
                 toggleSingleItemSelectedUseCase,
+                toggleSinglePetFavourite,
                 toggleAllPetsSelectedUseCase,
                 deleteSelectedPetsUseCase,
                 toggleSelectedItemsToFavouriteUseCase,
-                toggleSinglePetFavourite,
-                resourceManager
             )
             else -> error("Can't find actual viewModel.")
         }

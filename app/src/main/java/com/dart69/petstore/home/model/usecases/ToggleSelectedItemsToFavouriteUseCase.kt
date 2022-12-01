@@ -3,7 +3,6 @@ package com.dart69.petstore.home.model.usecases
 import com.dart69.petstore.home.data.PetsRepository
 import com.dart69.petstore.home.model.Pet
 import com.dart69.petstore.home.model.PetsSelectionTracker
-import com.dart69.petstore.shared.data.repository.updateMany
 import com.dart69.petstore.shared.model.takeResult
 
 interface ToggleSelectedItemsToFavouriteUseCase {
@@ -19,7 +18,7 @@ interface ToggleSelectedItemsToFavouriteUseCase {
             val selected = items.filter { pet -> pet.id in keys }
             val action =
                 if (selected.all { it.isFavourite }) Pet::unmakeFavourite else Pet::makeFavourite
-            repository.updateMany(selected.map { action(it) })
+            repository.update(selected.map { action(it) })
         }
     }
 }
