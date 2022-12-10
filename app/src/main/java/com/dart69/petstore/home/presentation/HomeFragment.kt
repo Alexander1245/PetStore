@@ -7,16 +7,16 @@ import android.view.ViewGroup
 import androidx.core.view.forEach
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dart69.petstore.R
 import com.dart69.petstore.databinding.FragmentHomeBinding
-import com.dart69.petstore.shared.model.Task
-import com.dart69.petstore.shared.model.onComplete
+import com.dart69.petstore.shared.model.*
 import com.dart69.petstore.shared.presentation.BaseFragment
+import com.dart69.petstore.shared.presentation.provideNavOptions
 import com.dart69.petstore.shared.provideFactory
 import com.dart69.petstore.shared.provideImageLoader
-import com.dart69.petstore.shared.use
-import com.google.android.material.snackbar.Snackbar
+import com.dart69.petstore.shared.employ
 
 class HomeFragment : BaseFragment() {
     private lateinit var binding: FragmentHomeBinding
@@ -31,7 +31,7 @@ class HomeFragment : BaseFragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) = binding.use {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) = binding.employ {
         super.onViewCreated(view, savedInstanceState)
         val petAdapter = PetAdapter(imageLoader, viewModel)
         toolbar.setOnMenuItemClickListener {
@@ -45,26 +45,32 @@ class HomeFragment : BaseFragment() {
             layoutManager = LinearLayoutManager(requireContext())
         }
         viewModel.pets.collectWhenStarted { task ->
-            progressLayout.root.isVisible = task !is Task.Completed
-            recyclerView.isVisible = task is Task.Completed
-            task.onComplete { pets ->
-                petAdapter.submitList(pets)
-                emptyPetsTextView.isVisible = pets.isEmpty()
-            }
-        }
-        viewModel.messages.collectWhenStarted { message ->
-            Snackbar.make(requireView(), message, Snackbar.LENGTH_SHORT).show()
+            progressGroup.isVisible = task.isNotCompleted()
+            recyclerView.isVisible = task.isCompleted()
+            task
+                .onComplete { pets ->
+                    petAdapter.submitList(pets)
+                    emptyPetsTextView.isVisible = pets.isEmpty()
+                }.onError { throwable ->
+                    messageTextView.text =
+                        getString(R.string.internal_error_message, throwable.message)
+                }.onLoading {
+                    messageTextView.text = getString(R.string.loading_data)
+                }
         }
         viewModel.selectionDetails.collectWhenStarted { details ->
             actionHintTextView.text =
                 getString(R.string.selected_items_hint, details.selected, details.total)
         }
-        viewModel.groupActionsVisibility.collectWhenStarted { visibility ->
-            toolbar.menu.forEach { it.isVisible = visibility == View.VISIBLE }
-            actionGroup.visibility = visibility
+        viewModel.isGroupActionsVisible.collectWhenStarted { isVisible ->
+            toolbar.menu.forEach { it.isVisible = isVisible }
+            actionsLayout.isVisible = isVisible
         }
         viewModel.actionHint.collectWhenStarted { hintRes ->
             actionButton.setText(hintRes)
+        }
+        viewModel.navigationDestination.collectWhenStarted { destination ->
+            findNavController().navigate(destination, provideNavOptions())
         }
     }
 }

@@ -2,21 +2,20 @@ package com.dart69.petstore.home.model.usecases
 
 import com.dart69.petstore.home.data.PetsRepository
 import com.dart69.petstore.home.model.PetsSelectionTracker
-import com.dart69.petstore.home.presentation.SelectablePet
+import com.dart69.petstore.home.model.SelectablePet
 import com.dart69.petstore.shared.data.repository.delete
 import com.dart69.petstore.shared.model.unselect
 
-interface DeleteSinglePetUseCase {
+interface DeletePetUseCase {
     suspend operator fun invoke(item: SelectablePet)
 
     class Implementation(
         private val repository: PetsRepository,
         private val tracker: PetsSelectionTracker
-    ) : DeleteSinglePetUseCase {
+    ) : DeletePetUseCase {
         override suspend fun invoke(item: SelectablePet) {
-            val pet = item.source
-            tracker.unselect(pet)
-            repository.delete(pet)
+            tracker.unselect(item)
+            repository.delete(item)
         }
     }
 }

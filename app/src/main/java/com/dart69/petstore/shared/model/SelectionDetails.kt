@@ -12,3 +12,7 @@ data class SelectionDetails(
         val EMPTY = SelectionDetails(0, 0)
     }
 }
+
+fun SelectionDetails.hasSelected(): Boolean = selected > 0
+
+fun SelectionDetails.allSelected(): Boolean = selected == total

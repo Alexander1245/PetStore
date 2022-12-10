@@ -8,10 +8,23 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.dart69.petstore.home.presentation.HomeFragment"
-        android:label="HomeFragment" />
+        android:label="HomeFragment">
+        <action
+            android:id="@+id/action_homeFragment_to_detailsFragment"
+            app:destination="@id/detailsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/testFragment"
         android:name="com.dart69.petstore.home.presentation.TestFragment"
         android:label="fragment_test"
         tools:layout="@layout/fragment_test" />
+    <fragment
+        android:id="@+id/detailsFragment"
+        android:name="com.dart69.petstore.details.presentation.DetailsFragment"
+        android:label="fragment_details"
+        tools:layout="@layout/fragment_details" >
+        <argument
+            android:name="pet"
+            app:argType="com.dart69.petstore.home.model.SelectablePet" />
+    </fragment>
 </navigation>

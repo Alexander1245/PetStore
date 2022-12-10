@@ -13,4 +13,9 @@
     <dimen name="image_view_item_margin_end">8dp</dimen>
     <dimen name="avatar_elevation">2dp</dimen>
     <dimen name="huge_text_size">34sp</dimen>
+    <dimen name="card_view_text_padding">4dp</dimen>
+    <dimen name="details_appbar_height">300dp</dimen>
+    <dimen name="app_bar_height">180dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
 </resources>

@@ -1,15 +1,14 @@
 package com.dart69.petstore.home.presentation
 
-import android.view.View
-import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavDirections
 import com.dart69.petstore.R
+import com.dart69.petstore.home.model.SelectablePet
 import com.dart69.petstore.home.model.usecases.*
-import com.dart69.petstore.shared.model.AvailableDispatchers
-import com.dart69.petstore.shared.model.SelectionDetails
-import com.dart69.petstore.shared.model.Task
+import com.dart69.petstore.shared.model.*
 import com.dart69.petstore.shared.then
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -17,63 +16,70 @@ class HomeViewModel(
     private val dispatchers: AvailableDispatchers,
     getPetsSortedByFavouriteUseCase: GetPetsSortedByFavouriteUseCase,
     getSelectionDetailsUseCase: GetSelectionDetailsUseCase,
-    private val deleteSinglePetUseCase: DeleteSinglePetUseCase,
-    private val toggleSinglePetSelectedUseCase: ToggleSinglePetSelectedUseCase,
-    private val toggleSinglePetFavourite: ToggleSinglePetFavouriteUseCase,
+    private val deletePetUseCase: DeletePetUseCase,
+    private val togglePetSelectedUseCase: TogglePetSelectedUseCase,
+    private val togglePetFavourite: TogglePetFavouriteUseCase,
     private val toggleAllPetsSelectedUseCase: ToggleAllPetsSelectedUseCase,
     private val deleteSelectedPetsUseCase: DeleteSelectedPetsUseCase,
-    private val toggleSelectedItemsToFavouriteUseCase: ToggleSelectedItemsToFavouriteUseCase,
+    private val toggleSelectedPetsFavouriteUseCase: ToggleSelectedPetsFavouriteUseCase,
+    private val refreshRepositoryUseCase: RefreshRepositoryUseCase,
+    private val applicationScope: CoroutineScope
 ) : ViewModel(), PetAdapterCallbacks {
-    private val mutableMessages = MutableSharedFlow<Int>()
-    val messages = mutableMessages.asSharedFlow()
+    private val mutableNavigationDestination = MutableSharedFlow<NavDirections>()
+    val navigationDestination = mutableNavigationDestination.asSharedFlow()
 
     val pets = getPetsSortedByFavouriteUseCase()
+        .onEach { task -> task.onCancel(::refreshRepository) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), Task.Loading())
 
     val selectionDetails = getSelectionDetailsUseCase()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), SelectionDetails.EMPTY)
 
-    val groupActionsVisibility = pets.combine(selectionDetails) { task, details ->
-        if (details.selected > 0 && task is Task.Completed) View.VISIBLE else View.GONE
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), View.GONE)
+    val isGroupActionsVisible = pets.combine(selectionDetails) { task, details ->
+        task.isCompleted() && details.hasSelected()
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
 
     val actionHint = selectionDetails.map { details ->
-        if (details.selected == details.total) R.string.unselect_all else R.string.select_all
+        if (details.allSelected()) R.string.unselect_all else R.string.select_all
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), R.string.select_all)
 
+    init {
+        refreshRepository()
+    }
+
     override fun onItemViewClick(item: SelectablePet) {
-        if (selectionDetails.value.selected > 0) {
-            toggleSinglePetSelectedUseCase(item)
+        if (selectionDetails.value.hasSelected()) {
+            togglePetSelectedUseCase(item)
         } else {
-            sendMessage(R.string.item_view_clicked)
+            openPetDetails(item)
         }
     }
 
     override fun onItemViewLongClick(item: SelectablePet): Boolean {
-        toggleSinglePetSelectedUseCase(item)
+        togglePetSelectedUseCase(item)
         return true
     }
 
     override fun onFavouriteClick(item: SelectablePet) {
-        viewModelScope.launch(dispatchers.main) {
-            toggleSinglePetFavourite(item)
+        applicationScope.launch(dispatchers.io) {
+            togglePetFavourite(item)
         }
     }
 
     override fun onAvatarClick(item: SelectablePet) {
-        sendMessage(R.string.not_yet_implemented)
+
     }
 
     override fun onPopupMenuItemsClick(item: SelectablePet, itemId: Int): Boolean = when (itemId) {
         R.id.itemDelete -> onDeleteClick(item) then true
         R.id.itemToggleFavourite -> onFavouriteClick(item) then true
-        R.id.itemToggleSelected -> toggleSinglePetSelectedUseCase(item) then true
+        R.id.itemToggleSelected -> togglePetSelectedUseCase(item) then true
         else -> false
     }
 
     override fun onDeleteClick(item: SelectablePet) {
-        viewModelScope.launch(dispatchers.main) {
-            deleteSinglePetUseCase(item)
+        applicationScope.launch(dispatchers.io) {
+            deletePetUseCase(item)
         }
     }
 
@@ -87,21 +93,29 @@ class HomeViewModel(
         toggleAllPetsSelectedUseCase()
     }
 
-    fun sendMessage(@StringRes messageRes: Int) {
-        viewModelScope.launch(dispatchers.main) {
-            mutableMessages.emit(messageRes)
-        }
-    }
-
     private fun toggleSelectedItemsFavourite() {
-        viewModelScope.launch(dispatchers.main) {
-            toggleSelectedItemsToFavouriteUseCase()
+        applicationScope.launch(dispatchers.io) {
+            toggleSelectedPetsFavouriteUseCase()
         }
     }
 
     private fun deleteSelectedItems() {
-        viewModelScope.launch(dispatchers.main) {
+        applicationScope.launch(dispatchers.io) {
             deleteSelectedPetsUseCase()
+        }
+    }
+
+    private fun refreshRepository() {
+        applicationScope.launch(dispatchers.io) {
+            refreshRepositoryUseCase()
+        }
+    }
+
+    private fun openPetDetails(item: SelectablePet) {
+        viewModelScope.launch(dispatchers.default) {
+            mutableNavigationDestination.emit(
+                HomeFragmentDirections.actionHomeFragmentToDetailsFragment(item)
+            )
         }
     }
 }

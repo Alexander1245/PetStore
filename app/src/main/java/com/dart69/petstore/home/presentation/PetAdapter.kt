@@ -5,16 +5,14 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import com.dart69.petstore.R
 import com.dart69.petstore.databinding.PetItemBinding
-import com.dart69.petstore.home.model.Pet
-import com.dart69.petstore.shared.model.item.SelectableWrapper
+import com.dart69.petstore.home.model.SelectablePet
 import com.dart69.petstore.shared.presentation.ImageLoader
 import com.dart69.petstore.shared.presentation.ItemAdapter
 import com.dart69.petstore.shared.presentation.ItemViewHolder
 import com.dart69.petstore.shared.showPopupMenu
-import com.dart69.petstore.shared.use
+import com.dart69.petstore.shared.employ
 import com.google.android.material.color.MaterialColors
 
-typealias SelectablePet = SelectableWrapper<Long, Pet>
 typealias PetItemViewHolder = ItemViewHolder<Long, SelectablePet, PetItemBinding>
 
 class PetAdapter(
@@ -38,7 +36,7 @@ class PetAdapter(
         private val callbacks: PetAdapterCallbacks,
         private val imageLoader: ImageLoader
     ) : PetItemViewHolder(binding) {
-        override fun bind(item: SelectablePet) = binding.use {
+        override fun bind(item: SelectablePet) = binding.employ {
             val context = itemView.context
             val backgroundColor = if (item.isSelected) {
                 ContextCompat.getColor(context, R.color.purple_200)
