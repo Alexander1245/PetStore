@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
+import javax.inject.Inject
 
 interface Logger {
     fun <T> logEachEmit(tag: String, initial: T, flow: Flow<T>)
@@ -14,7 +15,7 @@ interface Logger {
         override fun <T> logEachEmit(tag: String, initial: T, flow: Flow<T>) {}
     }
 
-    class Default(
+    class Default @Inject constructor(
         private val coroutineScope: CoroutineScope
     ) : Logger {
         override fun <T> logEachEmit(tag: String, initial: T, flow: Flow<T>) {

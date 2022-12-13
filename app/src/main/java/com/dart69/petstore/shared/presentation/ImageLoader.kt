@@ -10,8 +10,10 @@ import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.dart69.petstore.R
+import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import java.util.*
+import javax.inject.Inject
 
 interface ImageLoader {
     fun loadInto(imageUri: String, into: ImageView)
@@ -20,9 +22,8 @@ interface ImageLoader {
 }
 
 abstract class DefaultLoader(
-    context: Context
+    protected val context: Context
 ) : ImageLoader {
-    protected val applicationContext: Context = context.applicationContext
 
     protected open fun createFileName(): String = IMAGE_PREFIX + Date().time
 
@@ -39,7 +40,7 @@ abstract class DefaultLoader(
 
     override fun download(imageUri: String) {
         val downloadManager =
-            ContextCompat.getSystemService(applicationContext, DownloadManager::class.java)
+            ContextCompat.getSystemService(context, DownloadManager::class.java)
         val request = buildRequest(imageUri.toUri(), createFileName())
         downloadManager?.enqueue(request)
     }
@@ -51,11 +52,11 @@ abstract class DefaultLoader(
     }
 }
 
-class GlideImplementation(
-    context: Context,
+class GlideImplementation @Inject constructor(
+    @ApplicationContext context: Context,
 ) : DefaultLoader(context) {
     override fun loadInto(imageUri: String, into: ImageView) {
-        Glide.with(applicationContext)
+        Glide.with(context)
             .load(imageUri)
             .error(R.drawable.ic_sync_problem)
             .centerCrop()

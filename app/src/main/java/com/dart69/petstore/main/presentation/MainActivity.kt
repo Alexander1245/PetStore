@@ -8,12 +8,13 @@ import androidx.navigation.ui.setupWithNavController
 import com.dart69.petstore.R
 import com.dart69.petstore.databinding.ActivityMainBinding
 import com.dart69.petstore.shared.presentation.Screen
-import com.dart69.petstore.shared.requireFactory
 import com.dart69.petstore.shared.showToast
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity(), Screen {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
-    private val viewModel by viewModels<MainViewModel> { requireFactory() }
+    private val viewModel by viewModels<MainViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

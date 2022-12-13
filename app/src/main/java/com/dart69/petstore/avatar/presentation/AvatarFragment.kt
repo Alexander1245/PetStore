@@ -12,13 +12,16 @@ import androidx.navigation.fragment.navArgs
 import com.dart69.petstore.databinding.FragmentAvatarBinding
 import com.dart69.petstore.shared.employ
 import com.dart69.petstore.shared.isEnabledAlpha
+import com.dart69.petstore.shared.presentation.ImageLoader
 import com.dart69.petstore.shared.presentation.Screen
-import com.dart69.petstore.shared.requireFactory
-import com.dart69.petstore.shared.requireImageLoader
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class AvatarFragment : Fragment(), Screen {
     private lateinit var binding: FragmentAvatarBinding
-    private val viewModel by viewModels<AvatarViewModel> { requireFactory() }
+    private val viewModel by viewModels<AvatarViewModel>()
+    @Inject lateinit var imageLoader: ImageLoader
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,7 +37,7 @@ class AvatarFragment : Fragment(), Screen {
         val args by navArgs<AvatarFragmentArgs>()
         viewModel.initialize(args.pet)
         viewModel.screenState.collectWhenStarted { screenState ->
-            requireImageLoader().loadInto(screenState.avatarUri, imageViewAvatar)
+            imageLoader.loadInto(screenState.avatarUri, imageViewAvatar)
             toolbar.apply {
                 title = screenState.title
                 setNavigationOnClickListener { findNavController().popBackStack() }

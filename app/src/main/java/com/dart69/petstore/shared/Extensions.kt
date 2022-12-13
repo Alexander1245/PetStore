@@ -9,11 +9,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.MenuRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.dart69.petstore.shared.model.Task
-import com.dart69.petstore.shared.presentation.App
-import com.dart69.petstore.shared.presentation.ImageLoader
-import com.dart69.petstore.shared.presentation.ViewModelFactory
 import kotlinx.coroutines.flow.*
 
 fun <T> T.employ(block: T.() -> Unit) = block(this)
@@ -33,35 +29,6 @@ suspend fun <T> MutableSharedFlow<Task<T>>.emitTasks(resultBlock: suspend () -> 
     val upstream = taskFlowOf(resultBlock)
     emitAll(upstream)
 }
-
-fun Context.requireFactory(): ViewModelProvider.Factory {
-    val app = applicationContext as App
-    return ViewModelFactory(
-        app.provideAvailableDispatchers(),
-        app.provideGetPetItemsUseCase(),
-        app.provideGetSelectionDetailsUseCase(),
-        app.provideDeleteSinglePetUseCase(),
-        app.provideToggleSingleItemSelectedUseCase(),
-        app.provideToggleAllPetsSelectedUseCase(),
-        app.provideToggleSelectedItemsToFavouriteUseCase(),
-        app.provideDeleteSelectedPetsUseCase(),
-        app.provideToggleSingleItemFavouriteUseCase(),
-        app.provideApplicationScope(),
-        app.provideRefreshRepositoryUseCase(),
-        app.provideUpdatePetUseCase(),
-        app.provideDownloadAvatarUseCase(),
-        app.provideObserveMessageUseCase(),
-        app.provideSendMessageUseCase(),
-        app.provideLoadPreviousUseCase(),
-        app.provideLoadNextUseCase()
-    )
-}
-
-fun Fragment.requireFactory(): ViewModelProvider.Factory =
-    requireContext().requireFactory()
-
-fun Fragment.requireImageLoader(): ImageLoader =
-    (requireContext().applicationContext as App).provideImageLoader()
 
 fun Fragment.getDrawable(@DrawableRes res: Int): Drawable? =
     AppCompatResources.getDrawable(requireContext(), res)

@@ -11,14 +11,17 @@ import com.dart69.petstore.home.model.SelectablePet
 import com.dart69.petstore.home.model.usecases.DeletePetUseCase
 import com.dart69.petstore.shared.model.AvailableDispatchers
 import com.dart69.petstore.shared.model.item.toggleFavourite
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 private const val uncheckedIcon = R.drawable.ic_baseline_favourite_unchecked
 private const val checkedIcon = R.drawable.ic_baseline_favorite_checked
 
-class DetailsViewModel(
+@HiltViewModel
+class DetailsViewModel @Inject constructor(
     private val deletePetUseCase: DeletePetUseCase,
     private val applicationScope: CoroutineScope,
     private val dispatchers: AvailableDispatchers,

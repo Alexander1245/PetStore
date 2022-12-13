@@ -6,7 +6,6 @@ import com.dart69.petstore.shared.data.DataSource
 import com.dart69.petstore.shared.emitTasks
 import com.dart69.petstore.shared.model.AvailableDispatchers
 import com.dart69.petstore.shared.model.Task
-import com.dart69.petstore.shared.model.isCompleted
 import com.dart69.petstore.shared.model.item.UniqueItem
 import com.dart69.petstore.shared.model.takeResult
 import kotlinx.coroutines.delay
@@ -29,9 +28,11 @@ class FakeRepository<K, T : UniqueItem<K>>(
     override fun observe(): StateFlow<Task<List<T>>> = task.asStateFlow()
 
     override suspend fun retrieve(): List<T> {
-        if(task.value.isCompleted()) return task.value.takeResult()!!
-        delay(delayTime)
-        return localDataSource.fetch()
+        val currentList = task.value.takeResult()
+        return if (currentList.isNullOrEmpty()) {
+            delay(delayTime)
+            localDataSource.fetch()
+        } else currentList
     }
 
     override suspend fun update(items: List<T>) = withContext(dispatchers.default) {

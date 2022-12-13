@@ -8,21 +8,24 @@ import androidx.core.view.forEach
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dart69.petstore.R
 import com.dart69.petstore.databinding.FragmentHomeBinding
 import com.dart69.petstore.shared.employ
 import com.dart69.petstore.shared.model.*
+import com.dart69.petstore.shared.presentation.ImageLoader
 import com.dart69.petstore.shared.presentation.Screen
-import com.dart69.petstore.shared.presentation.provideNavOptions
-import com.dart69.petstore.shared.requireFactory
-import com.dart69.petstore.shared.requireImageLoader
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class HomeFragment : Fragment(), Screen {
     private lateinit var binding: FragmentHomeBinding
-    private val viewModel: HomeViewModel by viewModels { requireFactory() }
-    private val imageLoader by lazy { requireImageLoader() }
+    private val viewModel: HomeViewModel by viewModels()
+    @Inject lateinit var imageLoader: ImageLoader
+    @Inject lateinit var navOptions: NavOptions
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -71,7 +74,7 @@ class HomeFragment : Fragment(), Screen {
             actionButton.setText(hintRes)
         }
         viewModel.navigationDestination.collectWhenStarted { destination ->
-            findNavController().navigate(destination, provideNavOptions())
+            findNavController().navigate(destination, navOptions)
         }
     }
 }

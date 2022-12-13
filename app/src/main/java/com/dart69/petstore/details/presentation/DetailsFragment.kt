@@ -12,13 +12,16 @@ import com.dart69.petstore.R
 import com.dart69.petstore.databinding.FragmentDetailsBinding
 import com.dart69.petstore.shared.employ
 import com.dart69.petstore.shared.getDrawable
+import com.dart69.petstore.shared.presentation.ImageLoader
 import com.dart69.petstore.shared.presentation.Screen
-import com.dart69.petstore.shared.requireFactory
-import com.dart69.petstore.shared.requireImageLoader
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class DetailsFragment : Fragment(), Screen {
     private lateinit var binding: FragmentDetailsBinding
-    private val viewModel by viewModels<DetailsViewModel> { requireFactory() }
+    private val viewModel by viewModels<DetailsViewModel>()
+    @Inject lateinit var imageLoader: ImageLoader
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,7 +37,7 @@ class DetailsFragment : Fragment(), Screen {
         val args by navArgs<DetailsFragmentArgs>()
         viewModel.initialize(args.pet)
         viewModel.screenState.collectWhenStarted { screenState ->
-            requireImageLoader().loadInto(screenState.avatarUri, imageViewAvatar)
+            imageLoader.loadInto(screenState.avatarUri, imageViewAvatar)
             toolbar.apply {
                 title = screenState.titleText
                 menu.findItem(R.id.itemToggleFavourite).icon = getDrawable(screenState.iconResource)

@@ -8,11 +8,14 @@ import com.dart69.petstore.home.model.SelectablePet
 import com.dart69.petstore.home.model.usecases.*
 import com.dart69.petstore.shared.model.*
 import com.dart69.petstore.shared.then
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class HomeViewModel(
+@HiltViewModel
+class HomeViewModel @Inject constructor(
     private val dispatchers: AvailableDispatchers,
     getPetsSortedByFavouriteUseCase: GetPetsSortedByFavouriteUseCase,
     getSelectionDetailsUseCase: GetSelectionDetailsUseCase,

@@ -6,10 +6,13 @@ import com.dart69.petstore.avatar.domain.usecases.LoadNextUseCase
 import com.dart69.petstore.avatar.domain.usecases.LoadPreviousUseCase
 import com.dart69.petstore.home.model.SelectablePet
 import com.dart69.petstore.shared.model.AvailableDispatchers
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class AvatarViewModel(
+@HiltViewModel
+class AvatarViewModel @Inject constructor(
     private val dispatchers: AvailableDispatchers,
     private val loadPreviousUseCase: LoadPreviousUseCase,
     private val loadNextUseCase: LoadNextUseCase,
