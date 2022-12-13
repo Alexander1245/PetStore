@@ -2,7 +2,6 @@ package com.dart69.petstore.shared.data.repository
 
 import com.dart69.petstore.shared.model.Task
 import com.dart69.petstore.shared.model.item.UniqueItem
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
 internal val imageSources = listOf(
@@ -21,15 +20,13 @@ internal val imageSources = listOf(
 interface ItemRepository<K, T : UniqueItem<K>> {
     fun observe(): StateFlow<Task<List<T>>>
 
-    fun findByPrimaryKey(key: K): Flow<Task<T>>
-
-    suspend fun refresh()
-
-    suspend fun getAll(): List<T>
+    suspend fun retrieve(): List<T>
 
     suspend fun update(items: List<T>)
 
     suspend fun delete(items: List<T>)
+
+    suspend fun refresh()
 }
 
 suspend fun <K, T : UniqueItem<K>> ItemRepository<K, T>.update(item: T) {

@@ -2,69 +2,52 @@ package com.dart69.petstore.shared.data.repository
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import com.dart69.petstore.shared.data.DataSource
 import com.dart69.petstore.shared.emitTasks
 import com.dart69.petstore.shared.model.AvailableDispatchers
 import com.dart69.petstore.shared.model.Task
+import com.dart69.petstore.shared.model.isCompleted
 import com.dart69.petstore.shared.model.item.UniqueItem
-import com.dart69.petstore.shared.model.map
+import com.dart69.petstore.shared.model.takeResult
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.withContext
 
 class FakeRepository<K, T : UniqueItem<K>>(
-    initialData: List<T>,
+    private val localDataSource: DataSource<K, T>,
     private val dispatchers: AvailableDispatchers,
     private val delayTime: Long = 1500L
 ) : ItemRepository<K, T> {
-    private val taskHolder = MutableStateFlow(Task.initial(emptyList<T>()))
-    private val dataHolder = MutableStateFlow(initialData)
+    private val task = MutableStateFlow(Task.initial(emptyList<T>()))
 
     override suspend fun refresh() = withContext(dispatchers.default) {
-        taskHolder.emitTasks(::getAll)
+        task.emitTasks(::retrieve)
     }
 
-    override fun observe(): StateFlow<Task<List<T>>> = taskHolder.asStateFlow()
+    override fun observe(): StateFlow<Task<List<T>>> = task.asStateFlow()
 
-    override fun findByPrimaryKey(key: K): Flow<Task<T>> = taskHolder.map { task ->
-        task.map {
-            dataHolder.value.find { it.id == key }
-                ?: error("Can't find actual item in repository")
-        }
-    }
-
-    override suspend fun getAll(): List<T> = withContext(dispatchers.default) {
+    override suspend fun retrieve(): List<T> {
+        if(task.value.isCompleted()) return task.value.takeResult()!!
         delay(delayTime)
-        dataHolder.value
+        return localDataSource.fetch()
     }
 
     override suspend fun update(items: List<T>) = withContext(dispatchers.default) {
-        val updateSingle: MutableList<T>.(T) -> Unit = lambda@{ item: T ->
-            val index = indexOfFirst { it.id == item.id }
-            this[if (index != -1) index else return@lambda] = item
-        }
-        taskHolder.emitTasks {
+        task.emitTasks {
             delay(delayTime)
-            val uniqueItems = items.toSet()
-            dataHolder.updateAndGet { oldList ->
-                oldList.toMutableList().apply {
-                    uniqueItems.forEach { updateSingle(it) }
-                }
-            }
+            localDataSource.update(items)
+            localDataSource.fetch()
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
     override suspend fun delete(items: List<T>) = withContext(dispatchers.default) {
-        taskHolder.emitTasks {
+        task.emitTasks {
             delay(delayTime)
-            val keys = items.map { it.id }.toSet()
-            dataHolder.updateAndGet { oldList ->
-                oldList.toMutableList().apply {
-                    removeIf { item ->
-                        item.id in keys
-                    }
-                }
-            }
+            localDataSource.delete(items)
+            localDataSource.fetch()
         }
     }
 }

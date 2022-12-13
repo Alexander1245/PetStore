@@ -34,7 +34,12 @@
         <item name="android:background">?attr/selectableItemBackground</item>
     </style>
 
-    <style name="ItemImageView">
+    <style name="ImageView">
+        <item name="android:scaleType">centerCrop</item>
+        <item name="android:elevation">@dimen/avatar_elevation</item>
+    </style>
+
+    <style name="ItemImageView" parent="ImageView">
         <item name="android:layout_width">@dimen/image_view_item_size</item>
         <item name="android:layout_height">@dimen/image_view_item_size</item>
         <item name="android:layout_marginEnd">@dimen/default_margin</item>
@@ -42,13 +47,16 @@
         <item name="android:tint">?attr/colorOnSecondary</item>
     </style>
 
-    <style name="AvatarImageView">
+    <style name="AvatarImageView" parent="ImageView">
         <item name="android:layout_width">@dimen/avatar_size</item>
         <item name="android:layout_height">@dimen/avatar_size</item>
         <item name="android:layout_marginEnd">@dimen/default_margin</item>
         <item name="android:padding">@dimen/image_view_padding</item>
-        <item name="android:scaleType">centerCrop</item>
         <item name="android:layout_margin">@dimen/default_margin</item>
-        <item name="android:elevation">@dimen/avatar_elevation</item>
     </style>
+
+    <style name="ToolbarNavigationIcon" parent="Widget.AppCompat.Toolbar.Button.Navigation">
+        <item name="tint">?attr/colorOnSecondary</item>
+    </style>
+
 </resources>

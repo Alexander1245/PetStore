@@ -12,6 +12,9 @@
         <action
             android:id="@+id/action_homeFragment_to_detailsFragment"
             app:destination="@id/detailsFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_avatarFragment"
+            app:destination="@id/avatarFragment" />
     </fragment>
     <fragment
         android:id="@+id/testFragment"
@@ -23,6 +26,15 @@
         android:name="com.dart69.petstore.details.presentation.DetailsFragment"
         android:label="fragment_details"
         tools:layout="@layout/fragment_details" >
+        <argument
+            android:name="pet"
+            app:argType="com.dart69.petstore.home.model.SelectablePet" />
+    </fragment>
+    <fragment
+        android:id="@+id/avatarFragment"
+        android:name="com.dart69.petstore.avatar.presentation.AvatarFragment"
+        android:label="fragment_avatar"
+        tools:layout="@layout/fragment_avatar" >
         <argument
             android:name="pet"
             app:argType="com.dart69.petstore.home.model.SelectablePet" />

@@ -2,6 +2,9 @@ package com.dart69.petstore.shared.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.dart69.petstore.avatar.domain.usecases.LoadNextUseCase
+import com.dart69.petstore.avatar.domain.usecases.LoadPreviousUseCase
+import com.dart69.petstore.avatar.presentation.AvatarViewModel
 import com.dart69.petstore.details.domain.usecases.DownloadAvatarUseCase
 import com.dart69.petstore.details.domain.usecases.SendMessageUseCase
 import com.dart69.petstore.details.domain.usecases.UpdatePetUseCase
@@ -28,7 +31,9 @@ class ViewModelFactory(
     private val updatePetUseCase: UpdatePetUseCase,
     private val downloadAvatarUseCase: DownloadAvatarUseCase,
     private val observeMessagesUseCase: ObserveMessagesUseCase,
-    private val sendMessageUseCase: SendMessageUseCase
+    private val sendMessageUseCase: SendMessageUseCase,
+    private val loadPreviousUseCase: LoadPreviousUseCase,
+    private val loadNextUseCase: LoadNextUseCase
 ) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
@@ -46,7 +51,7 @@ class ViewModelFactory(
                 deleteSelectedPetsUseCase,
                 toggleSelectedItemsToFavouriteUseCase,
                 refreshRepositoryUseCase,
-                applicationScope
+                applicationScope,
             )
             DetailsViewModel::class.java -> DetailsViewModel(
                 deletePetUseCase,
@@ -54,7 +59,12 @@ class ViewModelFactory(
                 availableDispatchers,
                 updatePetUseCase,
                 downloadAvatarUseCase,
-                sendMessageUseCase
+                sendMessageUseCase,
+            )
+            AvatarViewModel::class.java -> AvatarViewModel(
+                availableDispatchers,
+                loadPreviousUseCase,
+                loadNextUseCase,
             )
             else -> error("Can't find actual viewModel.")
         }

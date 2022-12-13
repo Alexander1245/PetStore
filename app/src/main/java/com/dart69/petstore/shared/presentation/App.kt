@@ -4,6 +4,8 @@ import android.app.Application
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
 import com.dart69.petstore.R
+import com.dart69.petstore.avatar.domain.usecases.LoadNextUseCase
+import com.dart69.petstore.avatar.domain.usecases.LoadPreviousUseCase
 import com.dart69.petstore.details.domain.usecases.DownloadAvatarUseCase
 import com.dart69.petstore.details.domain.usecases.SendMessageUseCase
 import com.dart69.petstore.details.domain.usecases.UpdatePetUseCase
@@ -12,6 +14,7 @@ import com.dart69.petstore.home.data.asPetsRepository
 import com.dart69.petstore.home.model.*
 import com.dart69.petstore.home.model.usecases.*
 import com.dart69.petstore.main.domain.usecases.ObserveMessagesUseCase
+import com.dart69.petstore.shared.data.FakeLocalDataSource
 import com.dart69.petstore.shared.data.repository.FakeRepository
 import com.dart69.petstore.shared.data.repository.imageSources
 import com.dart69.petstore.shared.model.AvailableDispatchers
@@ -38,7 +41,9 @@ class App : Application() {
         //TEST ONLY
     }
     private val logger = Logger.Default(CoroutineScope(Dispatchers.Default))
-    private val repository = FakeRepository(data, provideAvailableDispatchers()).asPetsRepository()
+    private val dataSource = FakeLocalDataSource(data, provideAvailableDispatchers())
+    private val repository =
+        FakeRepository(dataSource, provideAvailableDispatchers()).asPetsRepository()
     private val selectionTracker =
         ItemSelectionTracker<Long, SelectablePet>(logger).asPetsSelectionTracker()
     private val imageLoader: ImageLoader by lazy { GlideImplementation(this) }
@@ -117,4 +122,10 @@ class App : Application() {
 
     fun provideSendMessageUseCase(): SendMessageUseCase =
         SendMessageUseCase.Implementation(messageObserver)
+
+    fun provideLoadPreviousUseCase(): LoadPreviousUseCase =
+        LoadPreviousUseCase.Implementation(provideRepository())
+
+    fun provideLoadNextUseCase(): LoadNextUseCase =
+        LoadNextUseCase.Implementation(provideRepository())
 }

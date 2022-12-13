@@ -18,18 +18,6 @@ import kotlinx.coroutines.launch
 private const val uncheckedIcon = R.drawable.ic_baseline_favourite_unchecked
 private const val checkedIcon = R.drawable.ic_baseline_favorite_checked
 
-data class ScreenState(
-    val titleText: String = "",
-    val detailsText: String = "",
-    val avatarUri: String = "",
-    val iconResource: Int = uncheckedIcon,
-    val isReadyToClose: Boolean = false
-) {
-    companion object {
-        val INITIAL = ScreenState()
-    }
-}
-
 class DetailsViewModel(
     private val deletePetUseCase: DeletePetUseCase,
     private val applicationScope: CoroutineScope,
@@ -57,6 +45,7 @@ class DetailsViewModel(
     }
 
     fun initialize(pet: SelectablePet) {
+        if(currentPet.value != null) return
         viewModelScope.launch(dispatchers.default) {
             currentPet.emit(pet)
             isToggleEnabled.emit(pet.isFavourite)
@@ -101,5 +90,17 @@ class DetailsViewModel(
             sendMessageUseCase(exception.message.orEmpty())
         }
         return true
+    }
+
+    data class ScreenState(
+        val titleText: String = "",
+        val detailsText: String = "",
+        val avatarUri: String = "",
+        val iconResource: Int = uncheckedIcon,
+        val isReadyToClose: Boolean = false
+    ) {
+        companion object {
+            val INITIAL = ScreenState()
+        }
     }
 }

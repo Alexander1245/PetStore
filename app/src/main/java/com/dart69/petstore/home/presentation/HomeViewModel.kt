@@ -29,7 +29,6 @@ class HomeViewModel(
     val navigationDestination = mutableNavigationDestination.asSharedFlow()
 
     val pets = getPetsSortedByFavouriteUseCase()
-        .onEach { task -> task.onCancel(::refreshRepository) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), Task.Loading())
 
     val selectionDetails = getSelectionDetailsUseCase()
@@ -67,7 +66,11 @@ class HomeViewModel(
     }
 
     override fun onAvatarClick(item: SelectablePet) {
-
+        viewModelScope.launch(dispatchers.default) {
+            mutableNavigationDestination.emit(
+                HomeFragmentDirections.actionHomeFragmentToAvatarFragment(item)
+            )
+        }
     }
 
     override fun onPopupMenuItemsClick(item: SelectablePet, itemId: Int): Boolean = when (itemId) {

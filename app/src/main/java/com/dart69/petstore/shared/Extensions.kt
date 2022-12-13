@@ -34,7 +34,7 @@ suspend fun <T> MutableSharedFlow<Task<T>>.emitTasks(resultBlock: suspend () -> 
     emitAll(upstream)
 }
 
-fun Context.provideFactory(): ViewModelProvider.Factory {
+fun Context.requireFactory(): ViewModelProvider.Factory {
     val app = applicationContext as App
     return ViewModelFactory(
         app.provideAvailableDispatchers(),
@@ -51,14 +51,16 @@ fun Context.provideFactory(): ViewModelProvider.Factory {
         app.provideUpdatePetUseCase(),
         app.provideDownloadAvatarUseCase(),
         app.provideObserveMessageUseCase(),
-        app.provideSendMessageUseCase()
+        app.provideSendMessageUseCase(),
+        app.provideLoadPreviousUseCase(),
+        app.provideLoadNextUseCase()
     )
 }
 
-fun Fragment.provideFactory(): ViewModelProvider.Factory =
-    requireContext().provideFactory()
+fun Fragment.requireFactory(): ViewModelProvider.Factory =
+    requireContext().requireFactory()
 
-fun Fragment.provideImageLoader(): ImageLoader =
+fun Fragment.requireImageLoader(): ImageLoader =
     (requireContext().applicationContext as App).provideImageLoader()
 
 fun Fragment.getDrawable(@DrawableRes res: Int): Drawable? =
@@ -73,3 +75,28 @@ fun View.showPopupMenu(@MenuRes menuRes: Int, itemClickListener: (Int) -> Boolea
 
 fun Context.showToast(message: String) =
     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+
+var View.isEnabledAlpha: Boolean
+    get() = isEnabled
+    set(enabled) {
+        alpha = if (enabled) 1.0f else 0.5f
+        isEnabled = enabled
+    }
+
+inline fun <T : Any> Iterable<T>.itemBefore(predicate: (T) -> Boolean): T? {
+    var previous: T? = null
+    forEach { current ->
+        if(predicate(current)) return previous
+        previous = current
+    }
+    return null
+}
+
+inline fun <T: Any> Iterable<T>.itemAfter(predicate: (T) -> Boolean): T? {
+    val currentIterator = iterator()
+    while (currentIterator.hasNext()) {
+        val current = currentIterator.next()
+        if(predicate(current) && currentIterator.hasNext()) return currentIterator.next()
+    }
+    return null
+}

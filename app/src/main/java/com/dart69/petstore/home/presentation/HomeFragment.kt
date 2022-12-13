@@ -6,22 +6,23 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.forEach
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dart69.petstore.R
 import com.dart69.petstore.databinding.FragmentHomeBinding
-import com.dart69.petstore.shared.model.*
-import com.dart69.petstore.shared.presentation.BaseFragment
-import com.dart69.petstore.shared.presentation.provideNavOptions
-import com.dart69.petstore.shared.provideFactory
-import com.dart69.petstore.shared.provideImageLoader
 import com.dart69.petstore.shared.employ
+import com.dart69.petstore.shared.model.*
+import com.dart69.petstore.shared.presentation.Screen
+import com.dart69.petstore.shared.presentation.provideNavOptions
+import com.dart69.petstore.shared.requireFactory
+import com.dart69.petstore.shared.requireImageLoader
 
-class HomeFragment : BaseFragment() {
+class HomeFragment : Fragment(), Screen {
     private lateinit var binding: FragmentHomeBinding
-    private val viewModel: HomeViewModel by viewModels { provideFactory() }
-    private val imageLoader by lazy { provideImageLoader() }
+    private val viewModel: HomeViewModel by viewModels { requireFactory() }
+    private val imageLoader by lazy { requireImageLoader() }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

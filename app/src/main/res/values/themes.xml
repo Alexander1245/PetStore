@@ -13,6 +13,7 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
         <item name="android:windowBackground">?attr/colorOnPrimary</item>
+        <item name="toolbarNavigationButtonStyle">@style/ToolbarNavigationIcon</item>
     </style>
 
     <style name="Theme.PetStore.NoActionBar">

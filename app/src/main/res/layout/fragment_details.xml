@@ -40,6 +40,7 @@
                 app:layout_collapseMode="pin"
                 app:menu="@menu/details_toolbar_menu"
                 app:navigationIcon="@drawable/ic_arrow_back"
+                app:navigationContentDescription="@string/go_back"
                 app:popupTheme="@style/Theme.PetStore.PopupOverlay"
                 tools:title="@string/app_name" />
 
