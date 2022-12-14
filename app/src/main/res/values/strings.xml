@@ -1,9 +1,7 @@
 <resources>
     <string name="app_name">PetStore</string>
     <string name="main">Main</string>
-    <string name="todo">TODO</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="tools_cat_name">Glorious cat Jack finds family. Again.</string>
     <string name="tools_cat_details">Red cat with green eyes Jack is beautiful. Jack is lazy, but very funny.</string>
@@ -11,23 +9,14 @@
     <string name="selected_items_hint">Selected: %1d out of %2d</string>
     <string name="select_all">Select All</string>
     <string name="unselect_all">Unselect All</string>
-    <string name="move_up">Move Up</string>
     <string name="delete">Delete</string>
     <string name="toggle_favourite">Toggle Favourite</string>
-    <string name="move_down">Move Down</string>
-    <string name="wait_for_loading_data">Wait for loading Pets…</string>
-    <string name="try_again">Try Again</string>
-    <string name="cant_load_data">Can\'t load data</string>
-    <string name="not_yet_implemented">Not yet implemented</string>
     <string name="toggle_selected">Toggle Selected</string>
-    <string name="item_view_clicked">Item view clicked</string>
     <string name="group_actions">Group Actions</string>
     <string name="loading_data">Loading data…</string>
     <string name="on_empty_pets_received">Oops…Can\'t find any pet</string>
     <string name="download_image">Download Image</string>
-    <string name="open_full_image">Open Full Image</string>
     <string name="internal_error_message">Internal error occurred: %1s</string>
-    <string name="cant_download_image">Can\'t download picture</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
 
@@ -117,9 +106,8 @@
         "For example, position the FAB to one side of stream of a cards so the FAB won’t interfere "
         "when a user tries to pick up one of cards.\n\n"
     </string>
-    <string name="action_settings">Settings</string>
-    <string name="refresh">Refresh</string>
     <string name="go_back">Go Back</string>
     <string name="previous">Previous</string>
     <string name="next">Next</string>
+    <string name="clear">Clear</string>
 </resources>

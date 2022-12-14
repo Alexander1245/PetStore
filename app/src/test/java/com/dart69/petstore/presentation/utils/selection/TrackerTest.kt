@@ -1,7 +1,8 @@
 package com.dart69.petstore.presentation.utils.selection
 
-import com.dart69.petstore.home.model.Pet
-import com.dart69.petstore.home.presentation.SelectablePet
+import com.dart69.petstore.home.domain.model.Pet
+import com.dart69.petstore.home.domain.model.SelectablePet
+import com.dart69.petstore.home.domain.model.makeSelectable
 import com.dart69.petstore.shared.model.*
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -13,8 +14,8 @@ internal class TrackerTest {
     @Test
     fun testToggleAndIsSelected() {
         val selectionTracker = tracker
-        val item = SelectablePet(Pet(1), false)
-        val notSelectedItem = SelectablePet(Pet(2), false)
+        val item = Pet(1).makeSelectable(false)
+        val notSelectedItem = Pet(2).makeSelectable(false)
         selectionTracker.toggle(item)
         assertEquals(true, selectionTracker.isSelected(item))
         assertEquals(false, selectionTracker.isSelected(notSelectedItem))
@@ -25,11 +26,11 @@ internal class TrackerTest {
         val selectionTracker = tracker
         val size = 10
         val items = List(size) {
-            SelectablePet(Pet(it.toLong()), false)
+            Pet(it.toLong()).makeSelectable(false)
         }
         val notSelectedItems = List(size) {
             val id = ((it + size) * 2).toLong()
-            SelectablePet(Pet(id), false)
+            Pet(id).makeSelectable(false)
         }
         selectionTracker.select(items)
         items.forEach { assertEquals(true, selectionTracker.isSelected(it)) }
@@ -41,11 +42,11 @@ internal class TrackerTest {
         val selectionTracker = tracker
         val size = 10
         val items = List(size) {
-            SelectablePet(Pet(it.toLong()), false)
+            Pet(it.toLong()).makeSelectable(false)
         }
         val notSelectedItems = List(size) {
             val id = ((it + size) * 2).toLong()
-            SelectablePet(Pet(id), false)
+            Pet(id).makeSelectable(false)
         }
         selectionTracker.select(items)
         selectionTracker.unselect(items)

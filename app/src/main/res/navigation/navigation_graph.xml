@@ -2,7 +2,6 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/navigation_graph"
     app:startDestination="@id/homeFragment">
 
     <fragment
@@ -28,7 +27,7 @@
         tools:layout="@layout/fragment_details" >
         <argument
             android:name="pet"
-            app:argType="com.dart69.petstore.home.model.SelectablePet" />
+            app:argType="com.dart69.petstore.home.domain.model.SelectablePet" />
     </fragment>
     <fragment
         android:id="@+id/avatarFragment"
@@ -37,6 +36,6 @@
         tools:layout="@layout/fragment_avatar" >
         <argument
             android:name="pet"
-            app:argType="com.dart69.petstore.home.model.SelectablePet" />
+            app:argType="com.dart69.petstore.home.domain.model.SelectablePet" />
     </fragment>
 </navigation>

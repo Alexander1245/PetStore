@@ -2,7 +2,10 @@ package com.dart69.petstore.home.di
 
 import com.dart69.petstore.home.data.PetsRepository
 import com.dart69.petstore.home.data.asPetsRepository
-import com.dart69.petstore.home.model.*
+import com.dart69.petstore.home.domain.*
+import com.dart69.petstore.home.domain.model.Pet
+import com.dart69.petstore.home.domain.model.SelectablePet
+import com.dart69.petstore.home.domain.model.makeSelectable
 import com.dart69.petstore.shared.data.DataSource
 import com.dart69.petstore.shared.data.FakeLocalDataSource
 import com.dart69.petstore.shared.data.repository.ItemRepository

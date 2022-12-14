@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import com.dart69.petstore.R
 import com.dart69.petstore.databinding.PetItemBinding
-import com.dart69.petstore.home.model.SelectablePet
+import com.dart69.petstore.home.domain.model.SelectablePet
 import com.dart69.petstore.shared.presentation.ImageLoader
 import com.dart69.petstore.shared.presentation.ItemAdapter
 import com.dart69.petstore.shared.presentation.ItemViewHolder

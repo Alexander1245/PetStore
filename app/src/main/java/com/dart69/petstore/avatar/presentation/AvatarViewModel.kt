@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dart69.petstore.avatar.domain.usecases.LoadNextUseCase
 import com.dart69.petstore.avatar.domain.usecases.LoadPreviousUseCase
-import com.dart69.petstore.home.model.SelectablePet
+import com.dart69.petstore.home.domain.model.SelectablePet
 import com.dart69.petstore.shared.model.AvailableDispatchers
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*

@@ -7,8 +7,8 @@ import com.dart69.petstore.R
 import com.dart69.petstore.details.domain.usecases.DownloadAvatarUseCase
 import com.dart69.petstore.details.domain.usecases.SendMessageUseCase
 import com.dart69.petstore.details.domain.usecases.UpdatePetUseCase
-import com.dart69.petstore.home.model.SelectablePet
-import com.dart69.petstore.home.model.usecases.DeletePetUseCase
+import com.dart69.petstore.home.domain.model.SelectablePet
+import com.dart69.petstore.home.domain.usecases.DeletePetUseCase
 import com.dart69.petstore.shared.model.AvailableDispatchers
 import com.dart69.petstore.shared.model.item.toggleFavourite
 import dagger.hilt.android.lifecycle.HiltViewModel

@@ -1,7 +1,7 @@
 package com.dart69.petstore.avatar.domain.usecases
 
 import com.dart69.petstore.home.data.PetsRepository
-import com.dart69.petstore.home.model.SelectablePet
+import com.dart69.petstore.home.domain.model.SelectablePet
 import com.dart69.petstore.shared.itemAfter
 
 interface LoadNextUseCase {

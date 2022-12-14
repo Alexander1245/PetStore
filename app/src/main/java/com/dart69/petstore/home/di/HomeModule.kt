@@ -1,8 +1,8 @@
 package com.dart69.petstore.home.di
 
 import com.dart69.petstore.home.data.PetsRepository
-import com.dart69.petstore.home.model.PetsSelectionTracker
-import com.dart69.petstore.home.model.usecases.*
+import com.dart69.petstore.home.domain.PetsSelectionTracker
+import com.dart69.petstore.home.domain.usecases.*
 import com.dart69.petstore.shared.model.AvailableDispatchers
 import dagger.Module
 import dagger.Provides
@@ -71,4 +71,9 @@ object HomeModule {
         tracker: PetsSelectionTracker
     ): ToggleSelectedPetsFavouriteUseCase =
         ToggleSelectedPetsFavouriteUseCase.Implementation(repository, tracker)
+
+    @Provides
+    fun provideClearSelectionUseCase(
+        tracker: PetsSelectionTracker
+    ): ClearSelectionUseCase = ClearSelectionUseCase.Implementation(tracker)
 }

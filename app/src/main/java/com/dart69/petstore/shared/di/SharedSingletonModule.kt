@@ -1,7 +1,7 @@
 package com.dart69.petstore.shared.di
 
 import android.content.Context
-import com.dart69.petstore.home.model.SelectablePet
+import com.dart69.petstore.home.domain.model.SelectablePet
 import com.dart69.petstore.shared.data.DataSource
 import com.dart69.petstore.shared.data.repository.FakeRepository
 import com.dart69.petstore.shared.data.repository.ItemRepository

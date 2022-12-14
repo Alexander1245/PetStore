@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavDirections
 import com.dart69.petstore.R
-import com.dart69.petstore.home.model.SelectablePet
-import com.dart69.petstore.home.model.usecases.*
+import com.dart69.petstore.home.domain.model.SelectablePet
+import com.dart69.petstore.home.domain.usecases.*
 import com.dart69.petstore.shared.model.*
 import com.dart69.petstore.shared.then
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,6 +26,7 @@ class HomeViewModel @Inject constructor(
     private val deleteSelectedPetsUseCase: DeleteSelectedPetsUseCase,
     private val toggleSelectedPetsFavouriteUseCase: ToggleSelectedPetsFavouriteUseCase,
     private val refreshRepositoryUseCase: RefreshRepositoryUseCase,
+    private val clearSelectionUseCase: ClearSelectionUseCase,
     private val applicationScope: CoroutineScope
 ) : ViewModel(), PetAdapterCallbacks {
     private val mutableNavigationDestination = MutableSharedFlow<NavDirections>()
@@ -92,6 +93,7 @@ class HomeViewModel @Inject constructor(
     fun onGroupActionItemClick(id: Int): Boolean = when (id) {
         R.id.itemToggleFavouriteForSelected -> toggleSelectedItemsFavourite() then true
         R.id.itemDeleteSelected -> deleteSelectedItems() then true
+        R.id.itemClear -> clearSelectionUseCase() then true
         else -> false
     }
 

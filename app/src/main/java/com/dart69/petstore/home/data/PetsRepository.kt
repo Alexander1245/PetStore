@@ -1,6 +1,6 @@
 package com.dart69.petstore.home.data
 
-import com.dart69.petstore.home.model.SelectablePet
+import com.dart69.petstore.home.domain.model.SelectablePet
 import com.dart69.petstore.shared.data.repository.ItemRepository
 
 interface PetsRepository : ItemRepository<Long, SelectablePet>
