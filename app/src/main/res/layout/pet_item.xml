@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/imageViewAvatar"
+        style="@style/AvatarImageView"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/RoundedImageView"
+        tools:src="@drawable/default_cat_sample" />
+
+    <TextView
+        android:id="@+id/textViewName"
+        style="@style/TitleTextView"
+        android:layout_marginStart="@dimen/textview_margin_start"
+        app:layout_constraintLeft_toRightOf="@id/imageViewAvatar"
+        app:layout_constraintTop_toTopOf="@id/imageViewAvatar"
+        tools:text="@string/tools_cat_name" />
+
+    <TextView
+        android:id="@+id/textViewDetails"
+        style="@style/DetailsTextView"
+        app:layout_constraintLeft_toLeftOf="@id/textViewName"
+        app:layout_constraintTop_toBottomOf="@id/textViewName"
+        tools:text="@string/tools_cat_details" />
+
+    <CheckBox
+        android:id="@+id/checkBoxIsFavourite"
+        style="@style/ItemImageView"
+        android:button="@drawable/favourite_check_box"
+        android:buttonTint="@color/favourites_red_color"
+        app:layout_constraintBottom_toBottomOf="@+id/textViewDetails"
+        app:layout_constraintEnd_toStartOf="@+id/imageViewDelete"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:checked="true"
+        tools:ignore="TouchTargetSizeCheck" />
+
+    <ImageView
+        android:id="@+id/imageViewDelete"
+        style="@style/ItemImageView"
+        android:src="@drawable/ic_delete"
+        app:layout_constraintBottom_toBottomOf="@id/checkBoxIsFavourite"
+        app:layout_constraintEnd_toStartOf="@+id/imageViewMore"
+        app:layout_constraintTop_toTopOf="@id/checkBoxIsFavourite"
+        android:contentDescription="@string/pet_avatar"/>
+
+    <ImageView
+        android:id="@+id/imageViewMore"
+        style="@style/ItemImageView"
+        android:layout_marginEnd="@dimen/image_view_item_margin_end"
+        android:contentDescription="@string/pet_avatar"
+        android:src="@drawable/ic_more"
+        app:layout_constraintBottom_toBottomOf="@+id/imageViewDelete"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imageViewDelete" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

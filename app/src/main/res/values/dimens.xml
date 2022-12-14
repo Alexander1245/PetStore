@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="rounded_image_view_stroke">1dp</dimen>
+    <dimen name="avatar_size">48dp</dimen>
+    <dimen name="default_margin">6dp</dimen>
+    <dimen name="image_view_padding">2dp</dimen>
+    <dimen name="title_text_size">16sp</dimen>
+    <dimen name="details_text_size">14sp</dimen>
+    <dimen name="image_view_item_size">24dp</dimen>
+    <dimen name="textview_margin_start">10dp</dimen>
+    <dimen name="textview_hint_margin_end">10dp</dimen>
+    <dimen name="default_padding">8dp</dimen>
+    <dimen name="image_view_item_margin_end">8dp</dimen>
+    <dimen name="avatar_elevation">2dp</dimen>
+    <dimen name="huge_text_size">34sp</dimen>
+    <dimen name="card_view_text_padding">4dp</dimen>
+    <dimen name="details_appbar_height">300dp</dimen>
+    <dimen name="app_bar_height">180dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
+</resources>

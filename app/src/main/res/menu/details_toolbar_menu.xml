@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/itemDownloadAvatar"
+        android:icon="@drawable/ic_download"
+        android:title="@string/download_image"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/itemToggleFavourite"
+        android:icon="@drawable/ic_baseline_favourite_unchecked"
+        android:title="@string/toggle_favourite"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/itemDelete"
+        android:icon="@drawable/ic_delete"
+        android:title="@string/delete"
+        app:showAsAction="ifRoom" />
+</menu>
