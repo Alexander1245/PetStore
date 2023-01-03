@@ -1,3 +1,5 @@
 # PetStore
-Pet store application.
+
+Sample android app with selection tracking, CRUD and DI.
+
 
