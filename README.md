@@ -1,7 +1,7 @@
 # PetStore
 
 Sample android app with selection tracking, CRUD and DI.
-Application use fake data source.
+The application uses a fake data source.
 </br><b>Features:</b> Select your favourite pets, remove them or watch their pictures in separate screen.
 </br>
 </br><b>Development stack: </b> Kotlin, Coroutines, Flows, Hilt, XML, Navigation Component, MVVM, Clean Architecture
